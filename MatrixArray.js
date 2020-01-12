@@ -85,10 +85,27 @@ function trimBack(tSketchArray){
 input: matrixArray
 output: condensedArray
  */
-function condenceArray(matrixArray){
-    let condensedArray;
-    // todo if val > -1, take the average of negihbouring 4 pixels
-    // todo if val = -1(space), leave it so that it is a pause
+function condenseArray(trimmedArray){
+    let condensedArray = [];
+    let array = trimmedArray;
+    let smallArray = [];
+    let count = 0;
+    // todo if val != null, take the average of negihbouring 4 pixels
+    // todo if val = null(space), leave it so that it is a pause
+    for (i = 0; i < array.length; i++){
+        if (array[i] !== null){
+            if(count < 5){
+                smallArray.push(array[i])
+            }else{
+                condensedArray.push(smallArray);
+                smallArray = [];
+                smallArray.push(array[i]);
+
+            }
+        }else{
+            condensedArray.push(null);
+        }
+    }
     return condensedArray;
 }
 
