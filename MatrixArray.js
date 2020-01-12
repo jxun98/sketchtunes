@@ -22,25 +22,28 @@ function convertMatrixToArray(tSketchMatrix){
     // todo check the x-axis of the matrix
     for (x = 0; x < width; x++){
         let pushed = false;
+        let innerArray = [];
         for (y = 0; y < height; y++){
             // console.log("x = " + x);
             // console.log("y = " + y);
             // console.log("matrix[x][y] =" + matrix[x][y]);
             if (matrix[x][y] === 1){
-                if (pushed === false) {
-                    // console.log("added 1");
-                    matrixArray.push(y);
-                    pushed = true;
-                } else {
-                    continue;
-                }
+                // if (pushed === false) {
+                //   // console.log("added 1");
+                //   matrixArray.push(y);
+                //   pushed = true;
+                // } else if (pushed === true){
+                //   continue;
+                // }
+                innerArray.push(y);
             }else if (matrix[x][y] === 0){
                 continue;
             }
+            matrixArray.push(innerArray);
         }
         if (pushed === false){
-            matrixArray.push(-999);
-            // console.log("added -999");
+            matrixArray.push(null);
+            // console.log("added null");
             pushed = true;
         }
     }
@@ -56,7 +59,7 @@ function trimFront(sketchArray){
     let array = sketchArray;
     let front = 0;
     for (i = 0; i < array.length; i++){
-        if (array[i] !== -999){
+        if (array[i] !== null){
             front = i;
             break;
         }
@@ -70,7 +73,7 @@ function trimBack(tSketchArray){
     let array = tSketchArray;
     let back = array.length;
     for (i = back - 1; i >= 0; i--){
-        if (array[i] !== -999){
+        if (array[i] !== null){
             back = i;
             break;
         }
