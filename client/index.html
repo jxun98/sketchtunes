@@ -50,7 +50,8 @@
     // cv.cvtColor(mat, dst, cv.COLOR_RGBA2GRAY);
     let dst = new cv.Mat();
 // You can try more different parameters
-    //debugger
+
+  //debugger
     cv.threshold(mat, dst, 100, 255, cv.THRESH_BINARY);
     let binaryArray2D = produceBinaryMatrix(dst);
     //console.table(binaryArray2D);
@@ -74,10 +75,10 @@
         "content-type": "application/json"
       }
     })
-            .then((res) => res.json())
-            .then((data) => {
-              console.log(data)
-            });
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data)
+    });
   };
 
 
@@ -113,6 +114,7 @@
 
     return binaryArrayRows;
   }
+  
   function onOpenCvReady() {
     // document.getElementById('status').innerHTML = 'Sketchtunes is ready';
   }
@@ -143,7 +145,7 @@
           }
           // innerArray.push(y);
           // break;
-        }else if (matrix[x][y] === 0){
+        } else if (matrix[x][y] === 0){
           // continue;
         }
         // matrixArray.push(innerArray);
@@ -153,6 +155,12 @@
         // console.log("added null");
         pushed = true;
       }
+      matrixArray.push(innerArray);
+    }
+    if (pushed === false){
+      matrixArray.push(-99999);
+      // console.log("added null");
+      pushed = true;
     }
     return matrixArray;
   }
@@ -170,6 +178,21 @@
         front = i;
         break;
       }
+  return matrixArray;
+}
+
+function trimArray(sketchArray){
+  let tfSketchArray = trimFront(sketchArray);
+  return trimBack(tfSketchArray);
+}
+
+function trimFront(sketchArray){
+  let array = sketchArray;
+  let front = 0;
+  for (i = 0; i < array.length; i++){
+    if (array[i] !== -99999){
+      front = i;
+      break;
     }
     array = array.slice(front,array.length + 1);
     console.log(array);
