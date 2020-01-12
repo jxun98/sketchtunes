@@ -7,55 +7,28 @@ class MatrixArray{
     }
 }
 
-/* trim the front, back, up, down of the matrix
-input: sketchMatrix - untrimmed, type: Matrix
-output: tSketchMatrix - trimmed, type: Matrix
+/* trim the front, back sketchArray
+input: sketchArray - untrimmed, type: Array
+output: tSketchArray - trimmed, type: Matrix
 */
-function trim(sketchMatrix){
-    let tSketchMatrix = new Matrix; // todo pretend we are using a 2d array to represent the matrix atm
-    tSketchMatrix = trimFront(sketchMatrix);
-    tSketchMatrix = trimBack(tsketchMatrix);
-    tSketchMatrix = trimUp(tsketchMatrix);
-    tSketchMatrix = trimDown(tsketchMatrix);
-
-    return tSketchMatrix;
-}
-
-function trimFront(sketchMatrix){
-    // todo helper to trip the matrix
-    return tSketchMatrix;
-}
-
-function trimBack(tSketchMatrix){
-    // todo helper to trip the back of the matrix
-    return tSketchMatrix;
-}
-
-function trimUp(tSketchMatrix){
-    // todo helper to trip the back of the matrix
-    return tSketchMatrix;
-}
-
-function trimDown(tSketchMatrix){
-    // todo helper to trip the back of the matrix
-    return tSketchMatrix;
-}
-
-/* convert the trimmed Matrix into Array form
- input: tSketchMatrix, type: Matrix
- output: matrixArray, type: Array
- */
-function convertMatrixToArray(tSketchMatrix, matrixArray){
+function convertMatrixToArray(tSketchMatrix){
     let matrix = tSketchMatrix;
-    let width = matrix.width;
-    let height = matrix.height;
+    let matrixArray = [];
+    // let width = matrix.width;
+    // let height = matrix.height;
+    let width =100;
+    let height =100;
 
     // todo check the x-axis of the matrix
     for (x = 0; x < width; x++){
         let pushed = false;
         for (y = 0; y < height; y++){
+            // console.log("x = " + x);
+            // console.log("y = " + y);
+            // console.log("matrix[x][y] =" + matrix[x][y]);
             if (matrix[x][y] === 1){
                 if (pushed === false) {
+                    // console.log("added 1");
                     matrixArray.push(y);
                     pushed = true;
                 } else {
@@ -67,19 +40,49 @@ function convertMatrixToArray(tSketchMatrix, matrixArray){
         }
         if (pushed === false){
             matrixArray.push(-999);
+            // console.log("added -999");
             pushed = true;
         }
     }
-    // todo If 1 -> add y-axis value(s) into array
-    // todo if 0 -> add -999 into array
     return matrixArray;
 }
 
+function trimArray(sketchArray){
+    let tfSketchArray = trimFront(sketchArray);
+    return trimBack(tfSketchArray);
+}
+
+function trimFront(sketchArray){
+    let array = sketchArray;
+    let front = 0;
+    for (i = 0; i < array.length; i++){
+        if (array[i] !== -999){
+            front = i;
+            break;
+        }
+    }
+    array = array.slice(front,array.length + 1);
+    console.log(array);
+    return array;
+}
+
+function trimBack(tSketchArray){
+    let array = tSketchArray;
+    let back = array.length;
+    for (i = back - 1; i >= 0; i--){
+        if (array[i] !== -999){
+            back = i;
+            break;
+        }
+    }
+    array = array.slice(0,back + 1);
+    return array;
+}
 /* reduce datapoints by averaging out (4)neighbouring pixels
 input: matrixArray
 output: condensedArray
  */
-function compressArray(matrixArray){
+function condenceArray(matrixArray){
     let condensedArray;
     // todo if val > -1, take the average of negihbouring 4 pixels
     // todo if val = -1(space), leave it so that it is a pause

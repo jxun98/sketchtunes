@@ -41,6 +41,9 @@ imgElement.onload = function() {
   let matrixArray = convertMatrixToArray(binaryArray2D);
   console.log(matrixArray);
 
+  let trimmedArray = trimArray(matrixArray);
+  console.log(trimmedArray);
+
   debugger
   cv.imshow('canvasOutput', dst);
   mat.delete();
@@ -94,15 +97,14 @@ function convertMatrixToArray(tSketchMatrix){
 
   // todo check the x-axis of the matrix
   for (x = 0; x < width; x++){
-    console.log("is this printed?");
     let pushed = false;
     for (y = 0; y < height; y++){
-      console.log("x = " + x);
-      console.log("y = " + y);
-      console.log("matrix[x][y] =" + matrix[x][y]);
+      // console.log("x = " + x);
+      // console.log("y = " + y);
+      // console.log("matrix[x][y] =" + matrix[x][y]);
       if (matrix[x][y] === 1){
         if (pushed === false) {
-          console.log("added 1");
+          // console.log("added 1");
           matrixArray.push(y);
           pushed = true;
         } else {
@@ -114,13 +116,43 @@ function convertMatrixToArray(tSketchMatrix){
     }
     if (pushed === false){
       matrixArray.push(-999);
-      console.log("added -999");
+      // console.log("added -999");
       pushed = true;
     }
   }
-  // todo If 1 -> add y-axis value(s) into array
-  // todo if 0 -> add -999 into array
   return matrixArray;
+}
+
+function trimArray(sketchArray){
+  let tfSketchArray = trimFront(sketchArray);
+  return trimBack(tfSketchArray);
+}
+
+function trimFront(sketchArray){
+  let array = sketchArray;
+  let front = 0;
+  for (i = 0; i < array.length; i++){
+    if (array[i] !== -999){
+      front = i;
+      break;
+    }
+  }
+  array = array.slice(front,array.length + 1);
+  console.log(array);
+  return array;
+}
+
+function trimBack(tSketchArray){
+  let array = tSketchArray;
+  let back = array.length;
+  for (i = back - 1; i >= 0; i--){
+    if (array[i] !== -999){
+      back = i;
+      break;
+    }
+  }
+  array = array.slice(0,back + 1);
+  return array;
 }
 </script>
 <script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
