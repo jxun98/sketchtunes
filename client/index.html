@@ -2,19 +2,36 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Hello OpenCV.js</title>
+<title>Sketchtunes</title>
+  <style>
+    h2 {
+      background-color: greenyellow;
+      text-align: center;
+    }
+
+    body {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    body div {
+      text-align: center;
+    }
+
+  </style>
 </head>
 <body>
-<h2>Hello OpenCV.js</h2>
-<p id="status">OpenCV.js is loading...</p>
+<h2>Sketchtunes</h2>
+
+<p id="status"></p>
 <div>
   <div class="inputoutput">
-    <img id="imageSrc" alt="No Image" width="100" height="100" />
-    <div class="caption">imageSrc <input type="file" id="fileInput" name="file" /></div>
+    <img id="imageSrc" alt="No Image Uploaded" width="100" height="100" />
+    <div class="caption">Upload Image <input type="file" id="fileInput" name="file" /></div>
   </div>
   <div class="inputoutput">
     <canvas id="canvasOutput" ></canvas>
-    <div class="caption">canvasOutput</div>
+    <div class="caption">Image with mask applied</div>
   </div>
 </div>
 <script type="text/javascript">
@@ -38,11 +55,30 @@ imgElement.onload = function() {
   let binaryArray2D = produceBinaryMatrix(dst);
   //console.table(binaryArray2D);
 
+  let matrixArray = convertMatrixToArray(binaryArray2D);
+  console.log(matrixArray);
+
+  let trimmedArray = trimArray(matrixArray);
+  console.log(trimmedArray);
+
+  // let condensedArray = condenseArray(trimmedArray);
+  // console.log(condensedArray);
 
   debugger
   cv.imshow('canvasOutput', dst);
   mat.delete();
   dst.delete();
+  fetch('https://localhost/api/v1/lines', {
+    method: 'POST',
+    body: JSON.stringify({"data": trimmedArray}),
+    headers: {
+      "content-type": "application/json"
+    }
+  })
+  .then((res) => res.json())
+  .then((data) => {
+    console.log(data)
+  });
 };
 
 
@@ -79,8 +115,122 @@ function produceBinaryMatrix(mat) {
   return binaryArrayRows;
 }
 function onOpenCvReady() {
-  document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
+  // document.getElementById('status').innerHTML = 'Sketchtunes is ready';
 }
+
+function convertMatrixToArray(tSketchMatrix){
+  let matrix = tSketchMatrix;
+  let matrixArray = [];
+  // let width = matrix.width;
+  // let height = matrix.height;
+  let width = matrix.length;
+  let height = matrix[0].length;
+
+  // todo check the x-axis of the matrix
+  for (x = 0; x < width; x++){
+    let pushed = false;
+    let innerArray = [];
+    for (y = 0; y < height; y++){
+      // console.log("x = " + x);
+      // console.log("y = " + y);
+      // console.log("matrix[x][y] =" + matrix[x][y]);
+      if (matrix[x][y] === 1){
+        // if (pushed === false) {
+        //   // console.log("added 1");
+        //   matrixArray.push(y);
+        //   pushed = true;
+        // } else if (pushed === true){
+        //   continue;
+        // }
+        innerArray.push(y);
+      }else if (matrix[x][y] === 0){
+        continue;
+      }
+      matrixArray.push(innerArray);
+    }
+    if (pushed === false){
+      matrixArray.push(null);
+      // console.log("added null");
+      pushed = true;
+    }
+  }
+  return matrixArray;
+}
+
+function trimArray(sketchArray){
+  let tfSketchArray = trimFront(sketchArray);
+  return trimBack(tfSketchArray);
+}
+
+function trimFront(sketchArray){
+  let array = sketchArray;
+  let front = 0;
+  for (i = 0; i < array.length; i++){
+    if (array[i] !== null){
+      front = i;
+      break;
+    }
+  }
+  array = array.slice(front,array.length + 1);
+  console.log(array);
+  return array;
+}
+
+function trimBack(tSketchArray){
+  let array = tSketchArray;
+  let back = array.length;
+  for (i = back - 1; i >= 0; i--){
+    if (array[i] !== null){
+      back = i;
+      break;
+    }
+  }
+  array = array.slice(0,back + 1);
+  return array;
+}
+
+// function condenseArray(trimmedArray){
+//   let condensedArray = [];
+//   let array = trimmedArray;
+//   let smallArray = [];
+//   let count = 0;
+//   // todo if val != null, take the average of negihbouring 4 pixels
+//   // todo if val = null(space), leave it so that it is a pause
+//   for (i = 0; i < array.length; i++){
+//     console.log(("array[i]:" + array[i]));
+//     if (array[i] !== null){
+//       console.log("did this even run?");
+//       if(count < 5){
+//         console.log("did this even run222?");
+//         smallArray.push(array[i]);
+//         count++;
+//         continue;
+//       }else{
+//         console.log("did this even run?3333");
+//         condensedArray.push(smallArray);
+//         smallArray = [];
+//         smallArray.push(array[i]);
+//         count = 1;
+//       }
+//       // condensedArray.push(smallArray);
+//     }else{
+//       condensedArray.push(null);
+//     }
+//   }
+//   return condensedArray;
+// }
+
+// function averageArray(trimmedArray){
+//   let sum = 0;
+//   for (i = 0 ; i < trimmedArray.length; i++){
+//     if (trimmedArray[i] !== null){
+//       for (j = 0; j < trimmedArray[i].length; j++){
+//         sum += trimmedArray[i][j];
+//       }
+//     }
+//   }
+// }
+
 </script>
 <script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
 </body>
