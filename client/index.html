@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Hello OpenCV.js</title>
+</head>
+<body>
+<h2>Hello OpenCV.js</h2>
+<p id="status">OpenCV.js is loading...</p>
+<div>
+  <div class="inputoutput">
+    <img id="imageSrc" alt="No Image" width="100" height="100" />
+    <div class="caption">imageSrc <input type="file" id="fileInput" name="file" /></div>
+  </div>
+  <div class="inputoutput">
+    <canvas id="canvasOutput" ></canvas>
+    <div class="caption">canvasOutput</div>
+  </div>
+</div>
+<script type="text/javascript">
+let imgElement = document.getElementById('imageSrc');
+let inputElement = document.getElementById('fileInput');
+inputElement.addEventListener('change', (e) => {
+  imgElement.src = URL.createObjectURL(e.target.files[0]);
+}, false);
+imgElement.onload = function() {
+
+  console.log('image is loaded!!! alan');
+  let mat = cv.imread(imgElement);
+  // let dst = new cv.Mat();
+  // cv.imshow('canvasOutput', mat);
+  // debugger
+  // cv.cvtColor(mat, dst, cv.COLOR_RGBA2GRAY);
+  let dst = new cv.Mat();
+// You can try more different parameters
+  //debugger
+  cv.threshold(mat, dst, 100, 255, cv.THRESH_BINARY);
+  let binaryArray2D = produceBinaryMatrix(dst);
+  //console.table(binaryArray2D);
+
+
+  debugger
+  cv.imshow('canvasOutput', dst);
+  mat.delete();
+  dst.delete();
+};
+
+
+function produceBinaryMatrix(mat) {
+
+  let binaryArrayRows = [];
+
+  for (let i = 0; i<mat.rows; i++) {
+
+    let binaryArrayColumn = [];
+
+    for (let j = 0; j<mat.cols; j++) {
+
+      let pixel = mat.ucharPtr(i,j);
+      let blue = pixel[0]; //B
+      let green = pixel[1]; //G
+      let red = pixel[2]; //R
+      //pixel[3] -> alpha
+
+      let BLACK_THRESHOLD = 50;
+      let colourAverage = (blue + green + red)/3;
+
+      if (colourAverage < BLACK_THRESHOLD) {
+        binaryArrayColumn.push(1);
+        console.log("WE HAVE BLACK AT X: " + i + " Y: " + j);
+      } else {
+        binaryArrayColumn.push(0);
+      }
+
+    }
+    binaryArrayRows.push(binaryArrayColumn);
+  }
+
+  return binaryArrayRows;
+}
+function onOpenCvReady() {
+  document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
+}
+</script>
+<script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
+</body>
+</html>
