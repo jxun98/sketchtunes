@@ -68,7 +68,7 @@ imgElement.onload = function() {
   cv.imshow('canvasOutput', dst);
   mat.delete();
   dst.delete();
-  fetch('https://localhost/api/v1/lines', {
+  fetch('http://localhost:8080/api/v1/lines', {
     method: 'POST',
     body: JSON.stringify({"data": trimmedArray}),
     headers: {
@@ -123,17 +123,18 @@ function convertMatrixToArray(tSketchMatrix){
   let matrixArray = [];
   // let width = matrix.width;
   // let height = matrix.height;
-  let width = matrix.length;
-  let height = matrix[0].length;
+  let width =100;
+  let height =100;
 
   // todo check the x-axis of the matrix
   for (x = 0; x < width; x++){
     let pushed = false;
     let innerArray = [];
+    let mark = false;
     for (y = 0; y < height; y++){
-      // console.log("x = " + x);
-      // console.log("y = " + y);
-      // console.log("matrix[x][y] =" + matrix[x][y]);
+      console.log("x = " + x);
+      console.log("y = " + y);
+      console.log("matrix[x][y] =" + matrix[x][y]);
       if (matrix[x][y] === 1){
         // if (pushed === false) {
         //   // console.log("added 1");
@@ -142,8 +143,13 @@ function convertMatrixToArray(tSketchMatrix){
         // } else if (pushed === true){
         //   continue;
         // }
-        innerArray.push(y);
+        if (mark === false) {
+          innerArray.push(y);
+          mark = true;
+          console.log("added");
+        }
       }else if (matrix[x][y] === 0){
+        mark = false;
         continue;
       }
       matrixArray.push(innerArray);

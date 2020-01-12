@@ -23,6 +23,7 @@ function convertMatrixToArray(tSketchMatrix){
     for (x = 0; x < width; x++){
         let pushed = false;
         let innerArray = [];
+        let mark = false;
         for (y = 0; y < height; y++){
             // console.log("x = " + x);
             // console.log("y = " + y);
@@ -35,8 +36,12 @@ function convertMatrixToArray(tSketchMatrix){
                 // } else if (pushed === true){
                 //   continue;
                 // }
-                innerArray.push(y);
+                if (mark === false) {
+                    innerArray.push(y);
+                    mark = true;
+                }
             }else if (matrix[x][y] === 0){
+                mark = false;
                 continue;
             }
             matrixArray.push(innerArray);
