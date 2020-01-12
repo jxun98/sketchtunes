@@ -14,29 +14,40 @@ output: tSketchArray - trimmed, type: Matrix
 function convertMatrixToArray(tSketchMatrix){
     let matrix = tSketchMatrix;
     let matrixArray = [];
-    // let width = matrix.width;
-    // let height = matrix.height;
-    let width =100;
-    let height =100;
+    let width = matrix.length;
+    let height = matrix[0].length;
+    // let width =100;
+    // let height =100;
+
+    console.log("width: " + width);
+    console.log("height: " + height);
 
     // todo check the x-axis of the matrix
     for (x = 0; x < width; x++){
         let pushed = false;
         let innerArray = [];
+        let mark = false;
         for (y = 0; y < height; y++){
-            // console.log("x = " + x);
-            // console.log("y = " + y);
-            // console.log("matrix[x][y] =" + matrix[x][y]);
+            console.log("x = " + x);
+            console.log("y = " + y);
+            console.log("matrix[x][y] =" + matrix[x][y]);
             if (matrix[x][y] === 1){
-                // if (pushed === false) {
-                //   // console.log("added 1");
-                //   matrixArray.push(y);
-                //   pushed = true;
-                // } else if (pushed === true){
-                //   continue;
-                // }
-                innerArray.push(y);
+                if (pushed === false) {
+                    // console.log("added 1");
+                    matrixArray.push(y);
+                    pushed = true;
+                } else if (pushed === true){
+                    continue;
+                }
+                if (mark === false) {
+                    innerArray.push(y);
+                    mark = true;
+                    console.log("added");
+                }
             }else if (matrix[x][y] === 0){
+                mark = false;
+                console.log("reset");
+                console.log("mark:" + mark);
                 continue;
             }
             matrixArray.push(innerArray);
