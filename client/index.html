@@ -38,6 +38,8 @@ imgElement.onload = function() {
   let binaryArray2D = produceBinaryMatrix(dst);
   //console.table(binaryArray2D);
 
+  let matrixArray = convertMatrixToArray(binaryArray2D);
+  console.log(matrixArray);
 
   debugger
   cv.imshow('canvasOutput', dst);
@@ -80,6 +82,45 @@ function produceBinaryMatrix(mat) {
 }
 function onOpenCvReady() {
   document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
+}
+
+function convertMatrixToArray(tSketchMatrix){
+  let matrix = tSketchMatrix;
+  let matrixArray = [];
+  // let width = matrix.width;
+  // let height = matrix.height;
+  let width =100;
+  let height =100;
+
+  // todo check the x-axis of the matrix
+  for (x = 0; x < width; x++){
+    console.log("is this printed?");
+    let pushed = false;
+    for (y = 0; y < height; y++){
+      console.log("x = " + x);
+      console.log("y = " + y);
+      console.log("matrix[x][y] =" + matrix[x][y]);
+      if (matrix[x][y] === 1){
+        if (pushed === false) {
+          console.log("added 1");
+          matrixArray.push(y);
+          pushed = true;
+        } else {
+          continue;
+        }
+      }else if (matrix[x][y] === 0){
+        continue;
+      }
+    }
+    if (pushed === false){
+      matrixArray.push(-999);
+      console.log("added -999");
+      pushed = true;
+    }
+  }
+  // todo If 1 -> add y-axis value(s) into array
+  // todo if 0 -> add -999 into array
+  return matrixArray;
 }
 </script>
 <script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
